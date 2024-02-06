@@ -147,6 +147,7 @@ with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
                         inputs=[i2v_input_image, i2v_input_text, i2v_steps, i2v_cfg_scale, i2v_eta, i2v_motion, i2v_seed],
                         outputs=[i2v_output_video],
                         fn = infer,
+                        cache_examples=True,
             )
         i2v_end_btn.click(inputs=[i2v_input_image, i2v_input_text, i2v_steps, i2v_cfg_scale, i2v_eta, i2v_motion, i2v_seed],
                         outputs=[i2v_output_video],
