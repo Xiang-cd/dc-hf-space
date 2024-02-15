@@ -120,9 +120,10 @@ with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
                     <a href='https://www.cse.cuhk.edu.hk/~ttwong/myself.html'>Tien-Tsin Wong</a>,\
                     <a href='https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=zh-CN'>Ying Shan</a>\
                 </h2> \
+                    <a style='font-size:18px;color: #000000'>If DynamiCrafter is helpful, please help to ⭐ the </a>\
                     <a style='font-size:18px;color: #000000' href='https://github.com/Doubiiu/DynamiCrafter'>[Github] </a>\
                     <a style='font-size:18px;color: #000000' href='https://arxiv.org/abs/2310.12190'> [ArXiv] </a>\
-                    <a style='font-size:18px;color: #000000' href='https://doubiiu.github.io/projects/DynamiCrafter/'> [Project Page] </a> 
+                    <a style='font-size:18px;color: #000000' href='https://doubiiu.github.io/projects/DynamiCrafter/'> [Project Page] </a>\ 
                      </div>")
     
     with gr.Tab(label='ImageAnimation_576x1024'):
