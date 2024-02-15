@@ -124,8 +124,7 @@ with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
                 <a style='font-size:18px;color: #000000' href='https://github.com/Doubiiu/DynamiCrafter'>[Github Repo]</a>\
                 <a style='font-size:18px;color: #000000'>, which is important to Open-Source projects. Thanks!</a>\
                     <a style='font-size:18px;color: #000000' href='https://arxiv.org/abs/2310.12190'> [ArXiv] </a>\
-                    <a style='font-size:18px;color: #000000' href='https://doubiiu.github.io/projects/DynamiCrafter/'> [Project Page] </a> 
-                     </div>")
+                    <a style='font-size:18px;color: #000000' href='https://doubiiu.github.io/projects/DynamiCrafter/'> [Project Page] </a> </div>")
     
     with gr.Tab(label='ImageAnimation_576x1024'):
         with gr.Column():
