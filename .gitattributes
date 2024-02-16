@@ -35,3 +35,9 @@ saved_model/**/* filter=lfs diff=lfs merge=lfs -text
 *tfevents* filter=lfs diff=lfs merge=lfs -text
 prompts/surf.png filter=lfs diff=lfs merge=lfs -text
 prompts/1024/firework03.png filter=lfs diff=lfs merge=lfs -text
+gradio_cached_examples/23/Generated[[:space:]]Video/3497b7d3cd82974eda03/pouring_beer_into_a_glass_of_ice_and_bee.mp4 filter=lfs diff=lfs merge=lfs -text
+gradio_cached_examples/23/Generated[[:space:]]Video/3d6fa9171569e65a5c44/time-lapse_of_a_blooming_flower_with_lea.mp4 filter=lfs diff=lfs merge=lfs -text
+gradio_cached_examples/23/Generated[[:space:]]Video/5aaf2caf18e11f3f6f88/fireworks_display.mp4 filter=lfs diff=lfs merge=lfs -text
+gradio_cached_examples/23/Generated[[:space:]]Video/822374d4f5823e1e17f7/a_beautiful_woman_with_long_hair_and_a_d.mp4 filter=lfs diff=lfs merge=lfs -text
+gradio_cached_examples/23/Generated[[:space:]]Video/8bfabb01076f44809dc4/a_robot_is_walking_through_a_destroyed_c.mp4 filter=lfs diff=lfs merge=lfs -text
+gradio_cached_examples/23/Generated[[:space:]]Video/9229e3ef631cc3afdd67/a_man_in_an_astronaut_suit_playing_a_gui.mp4 filter=lfs diff=lfs merge=lfs -text
