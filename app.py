@@ -31,7 +31,7 @@ def download_model():
         if not os.path.exists(local_file):
             hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir='./checkpoints/dynamicrafter_1024_v1/', force_download=True)
     
-@spaces.GPU
+@spaces.GPU(duration=120)
 def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
     resolution = (576, 1024)
     download_model()
