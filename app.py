@@ -31,7 +31,7 @@ def download_model():
         if not os.path.exists(local_file):
             hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir='./checkpoints/dynamicrafter_1024_v1/', force_download=True)
     
-@spaces.GPU(duration=120)
+@spaces.GPU(duration=540)
 def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
     resolution = (576, 1024)
     download_model()
@@ -97,12 +97,12 @@ def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
 
 
 i2v_examples = [
-    ['prompts/1024/astronaut04.png', 'a man in an astronaut suit playing a guitar', 50, 7.5, 1.0, 6, 123],
-    ['prompts/1024/bloom01.png', 'time-lapse of a blooming flower with leaves and a stem', 50, 7.5, 1.0, 10, 123],
-    ['prompts/1024/girl07.png', 'a beautiful woman with long hair and a dress blowing in the wind', 50, 7.5, 1.0, 10, 123],
-    ['prompts/1024/pour_bear.png', 'pouring beer into a glass of ice and beer', 50, 7.5, 1.0, 10, 123],
-    ['prompts/1024/robot01.png', 'a robot is walking through a destroyed city', 50, 7.5, 1.0, 10, 123],
-    ['prompts/1024/firework03.png', 'fireworks display', 50, 7.5, 1.0, 10, 123],
+    ['prompts/1024/astronaut04.png', 'a man in an astronaut suit playing a guitar', 30, 7.5, 1.0, 6, 123],
+    ['prompts/1024/bloom01.png', 'time-lapse of a blooming flower with leaves and a stem', 30, 7.5, 1.0, 10, 123],
+    ['prompts/1024/girl07.png', 'a beautiful woman with long hair and a dress blowing in the wind', 30, 7.5, 1.0, 10, 123],
+    ['prompts/1024/pour_bear.png', 'pouring beer into a glass of ice and beer', 30, 7.5, 1.0, 10, 123],
+    ['prompts/1024/robot01.png', 'a robot is walking through a destroyed city', 30, 7.5, 1.0, 10, 123],
+    ['prompts/1024/firework03.png', 'fireworks display', 30, 7.5, 1.0, 10, 123],
 ]
 
 
