@@ -30,23 +30,27 @@ def download_model():
         local_file = os.path.join('./checkpoints/dynamicrafter_1024_v1/', filename)
         if not os.path.exists(local_file):
             hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir='./checkpoints/dynamicrafter_1024_v1/', force_download=True)
-    
+
+
+
+download_model()
+ckpt_path='checkpoints/dynamicrafter_1024_v1/model.ckpt'
+config_file='configs/inference_1024_v1.0.yaml'
+config = OmegaConf.load(config_file)
+model_config = config.pop("model", OmegaConf.create())
+model_config['params']['unet_config']['params']['use_checkpoint']=False   
+model = instantiate_from_config(model_config)
+assert os.path.exists(ckpt_path), "Error: checkpoint Not Found!"
+model = load_model_checkpoint(model, ckpt_path)
+model.eval()
+model = model.cuda()
+
+
+
 @spaces.GPU(duration=300)
 def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
     resolution = (576, 1024)
-    download_model()
-    ckpt_path='checkpoints/dynamicrafter_1024_v1/model.ckpt'
-    config_file='configs/inference_1024_v1.0.yaml'
-    config = OmegaConf.load(config_file)
-    model_config = config.pop("model", OmegaConf.create())
-    model_config['params']['unet_config']['params']['use_checkpoint']=False   
-    model = instantiate_from_config(model_config)
-    assert os.path.exists(ckpt_path), "Error: checkpoint Not Found!"
-    model = load_model_checkpoint(model, ckpt_path)
-    model.eval()
-    model = model.cuda()
     save_fps = 8
-
     seed_everything(seed)
     transform = transforms.Compose([
         transforms.Resize(min(resolution)),
@@ -93,7 +97,6 @@ def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
     
         video_path = './output.mp4'
         save_videos(batch_samples, './', filenames=['output'], fps=save_fps)
-    model = model.cpu()
     return video_path
 
 
