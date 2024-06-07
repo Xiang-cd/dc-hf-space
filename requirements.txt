@@ -17,7 +17,7 @@ moviepy
 av
 xformers
 gradio
-timm
+timm==0.16.3
 scikit-learn 
 open_clip_torch==2.22.0
 kornia
