@@ -12,7 +12,7 @@ from einops import rearrange
 
 
 def batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=50, ddim_eta=1.0,\
-                        cfg_scale=1.0, temporal_cfg_scale=None, **kwargs):
+                        cfg_scale=1.0, temporal_cfg_scale=None,ddpm_from=1000, **kwargs):
     ddim_sampler = DDIMSampler(model)
     uncond_type = model.uncond_type
     batch_size = noise_shape[0]
@@ -70,6 +70,7 @@ def batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=50, dd
                                             fs=fs,
                                             timestep_spacing=timestep_spacing,
                                             guidance_rescale=guidance_rescale,
+                                            ddpm_from=ddpm_from
                                             **kwargs
                                             )
         ## reconstruct from latent to pixel space

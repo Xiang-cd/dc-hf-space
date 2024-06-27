@@ -13,7 +13,7 @@ from einops import repeat
 import torchvision.transforms as transforms
 from utils.utils import instantiate_from_config
 sys.path.insert(0, "scripts/evaluation")
-from funcs import (
+from scripts.evaluation.funcs import (
     batch_ddim_sampling,
     load_model_checkpoint,
     get_latent_z,
@@ -31,7 +31,7 @@ def download_model():
             hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir='./checkpoints/dynamicrafter_512_v1/', force_download=True)
     
 
-def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
+def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123,ddpm_from=1000):
     resolution = (320, 512)
     download_model()
     ckpt_path='checkpoints/dynamicrafter_512_v1/model.ckpt'
@@ -86,7 +86,7 @@ def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
     cond = {"c_crossattn": [imtext_cond], "fs": fs, "c_concat": [img_tensor_repeat]}
     
     ## inference
-    batch_samples = batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=steps, ddim_eta=eta, cfg_scale=cfg_scale)
+    batch_samples = batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=steps, ddim_eta=eta, cfg_scale=cfg_scale,ddpm_from=ddpm_from)
     ## b,samples,c,t,h,w
 
     video_path = './output.mp4'
@@ -96,12 +96,12 @@ def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
 
 
 i2v_examples = [
-    ['prompts/512/bloom01.png', 'time-lapse of a blooming flower with leaves and a stem', 50, 7.5, 1.0, 24, 123],
-    ['prompts/512/campfire.png', 'a bonfire is lit in the middle of a field', 50, 7.5, 1.0, 24, 123],
-    ['prompts/512/isometric.png', 'rotating view, small house', 50, 7.5, 1.0, 24, 123],
-    ['prompts/512/girl08.png', 'a woman looking out in the rain', 50, 7.5, 1.0, 24, 1234],
-    ['prompts/512/ship02.png', 'a sailboat sailing in rough seas with a dramatic sunset', 50, 7.5, 1.0, 24, 123],
-    ['prompts/512/zreal_penguin.png', 'a group of penguins walking on a beach', 50, 7.5, 1.0, 20, 123],
+    ['prompts/512/7.png', 'Donkeys in traditional attire gallop across a lush green meadow.', 50, 7.5, 1.0, 24, 123,900],
+    ['prompts/512/41.png', 'Rabbits playing in a river.', 50, 7.5, 1.0, 24, 123,900],
+    ['prompts/512/32.png', 'Mountains under the starlight.', 50, 7.5, 1.0, 24, 123,900],
+    ['prompts/512/14.png', 'A duck swimming in the lake.', 50, 7.5, 1.0, 24, 123,900],
+    ['prompts/512/30.png', 'A soldier riding a horse.', 50, 7.5, 1.0, 24, 123,900],
+    ['prompts/512/52.png', 'Fireworks exploding in the sky.', 50, 7.5, 1.0, 24, 123,900],
 ]
 
 
@@ -138,17 +138,18 @@ with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
                     with gr.Row():
                         i2v_steps = gr.Slider(minimum=1, maximum=60, step=1, elem_id="i2v_steps", label="Sampling steps", value=50)
                         i2v_motion = gr.Slider(minimum=15, maximum=30, step=1, elem_id="i2v_motion", label="FPS", value=24)
+                        i2v_ddpm_from = gr.Slider(minimum=840, maximum=1000, step=1, elem_id="i2v_motion", label="FPS", value=900)
                     i2v_end_btn = gr.Button("Generate")
                 # with gr.Tab(label='Result'):
                 with gr.Row():
                     i2v_output_video = gr.Video(label="Generated Video",elem_id="output_vid",autoplay=True,show_share_button=True)
 
             gr.Examples(examples=i2v_examples,
-                        inputs=[i2v_input_image, i2v_input_text, i2v_steps, i2v_cfg_scale, i2v_eta, i2v_motion, i2v_seed],
+                        inputs=[i2v_input_image, i2v_input_text, i2v_steps, i2v_cfg_scale, i2v_eta, i2v_motion, i2v_seed,i2v_ddpm_from],
                         outputs=[i2v_output_video],
                         fn = infer,
             )
-        i2v_end_btn.click(inputs=[i2v_input_image, i2v_input_text, i2v_steps, i2v_cfg_scale, i2v_eta, i2v_motion, i2v_seed],
+        i2v_end_btn.click(inputs=[i2v_input_image, i2v_input_text, i2v_steps, i2v_cfg_scale, i2v_eta, i2v_motion, i2v_seed,i2v_ddpm_from],
                         outputs=[i2v_output_video],
                         fn = infer
         )
