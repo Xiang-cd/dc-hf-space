@@ -70,7 +70,7 @@ def batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=50, dd
                                             fs=fs,
                                             timestep_spacing=timestep_spacing,
                                             guidance_rescale=guidance_rescale,
-                                            ddpm_from=ddpm_from
+                                            ddpm_from=ddpm_from,
                                             **kwargs
                                             )
         ## reconstruct from latent to pixel space

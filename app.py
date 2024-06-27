@@ -14,7 +14,7 @@ from einops import repeat
 import torchvision.transforms as transforms
 from utils.utils import instantiate_from_config
 sys.path.insert(0, "scripts/evaluation")
-from funcs import (
+from scripts.evaluation.funcs import (
     batch_ddim_sampling,
     load_model_checkpoint,
     get_latent_z,
@@ -49,7 +49,7 @@ model = model.cuda()
 
 
 # @spaces.GPU(duration=300)
-def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
+def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123, ddpm_from=1000):
     resolution = (320, 512)
     save_fps = 8
     seed_everything(seed)
@@ -93,7 +93,7 @@ def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
         cond = {"c_crossattn": [imtext_cond], "fs": fs, "c_concat": [img_tensor_repeat]}
         
         ## inference
-        batch_samples = batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=steps, ddim_eta=eta, cfg_scale=cfg_scale)
+        batch_samples = batch_ddim_sampling(model, cond, noise_shape, n_samples=1, ddim_steps=steps, ddim_eta=eta, cfg_scale=cfg_scale, ddpm_from=ddpm_from)
         ## b,samples,c,t,h,w
     
         video_path = './output.mp4'
@@ -102,12 +102,12 @@ def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
 
 
 i2v_examples = [
-    ['prompts/1024/astronaut04.png', 'a man in an astronaut suit playing a guitar', 30, 7.5, 1.0, 6, 123],
-    ['prompts/1024/bloom01.png', 'time-lapse of a blooming flower with leaves and a stem', 30, 7.5, 1.0, 10, 123],
-    ['prompts/1024/girl07.png', 'a beautiful woman with long hair and a dress blowing in the wind', 30, 7.5, 1.0, 10, 123],
-    ['prompts/1024/pour_bear.png', 'pouring beer into a glass of ice and beer', 30, 7.5, 1.0, 10, 123],
-    ['prompts/1024/robot01.png', 'a robot is walking through a destroyed city', 30, 7.5, 1.0, 10, 123],
-    ['prompts/1024/firework03.png', 'fireworks display', 30, 7.5, 1.0, 10, 123],
+    ['prompts/512/7.png', 'Donkeys in traditional attire gallop across a lush green meadow.', 50, 7.5, 1.0, 24, 123,900],
+    ['prompts/512/41.png', 'Rabbits playing in a river.', 50, 7.5, 1.0, 24, 123,900],
+    ['prompts/512/32.png', 'Mountains under the starlight.', 50, 7.5, 1.0, 24, 123,900],
+    ['prompts/512/14.png', 'A duck swimming in the lake.', 50, 7.5, 1.0, 24, 123,900],
+    ['prompts/512/30.png', 'A soldier riding a horse.', 50, 7.5, 1.0, 24, 123,900],
+    ['prompts/512/52.png', 'Fireworks exploding in the sky.', 50, 7.5, 1.0, 24, 123,900],
 ]
 
 
@@ -118,18 +118,18 @@ css = """#input_img {max-width: 1024px !important} #output_vid {max-width: 1024p
 with gr.Blocks(analytics_enabled=False, css=css) as demo:
     gr.Markdown("<div align='center'> <h1> DynamiCrafter-CIL </span> </h1> \
                     <h2 style='font-weight: 450; font-size: 1rem; margin: 0rem'>\
-                    <a href='https://doubiiu.github.io/'>Jinbo Xing</a>, \
-                    <a href='https://menghanxia.github.io/'>Menghan Xia</a>, <a href='https://yzhang2016.github.io/'>Yong Zhang</a>, \
-                    <a href=''>Haoxin Chen</a>, <a href=''> Wangbo Yu</a>,\
-                    <a href='https://github.com/hyliu'>Hanyuan Liu</a>, <a href='https://xinntao.github.io/'>Xintao Wang</a>,\
-                    <a href='https://www.cse.cuhk.edu.hk/~ttwong/myself.html'>Tien-Tsin Wong</a>,\
-                    <a href='https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=zh-CN'>Ying Shan</a>\
+                    <a href='https://gracezhao1997.github.io/'>Min Zhao</a>, \
+                    <a href='https://zhuhz22.github.io/'>Hongzhou Zhu</a>, \
+                    <a href='https://xiang-cd.github.io/'>Chendong Xiang</a>, \
+                    <a href='https://scholar.google.com/citations?user=0d80xSIAAAAJ&hl=en'>Kaiwen Zheng</a>, \
+                    <a href='https://zhenxuan00.github.io/'> Chongxuan Li</a>,\
+                    <a href='https://ml.cs.tsinghua.edu.cn/~jun/software.shtml'>Jun Zhu</a>,\
                 </h2> \
                 <a style='font-size:18px;color: #000000'>If DynamiCrafter is useful, please help star the </a>\
-                <a style='font-size:18px;color: #000000' href='https://github.com/Doubiiu/DynamiCrafter'>[Github Repo]</a>\
+                <a style='font-size:18px;color: #000000' href='https://github.com/thu-ml/cond-image-leakage/'>[Github Repo]</a>\
                 <a style='font-size:18px;color: #000000'>, which is important to Open-Source projects. Thanks!</a>\
-                    <a style='font-size:18px;color: #000000' href='https://arxiv.org/abs/2310.12190'> [ArXiv] </a>\
-                    <a style='font-size:18px;color: #000000' href='https://doubiiu.github.io/projects/DynamiCrafter/'> [Project Page] </a> </div>")
+                    <a style='font-size:18px;color: #000000' href='https://arxiv.org/abs/2406.15735'> [ArXiv] </a>\
+                    <a style='font-size:18px;color: #000000' href='https://cond-image-leak.github.io/'> [Project Page] </a> </div>")
     
     with gr.Tab(label='ImageAnimation_576x1024'):
         with gr.Column():
@@ -146,7 +146,8 @@ with gr.Blocks(analytics_enabled=False, css=css) as demo:
                     with gr.Row():
                         i2v_steps = gr.Slider(minimum=1, maximum=50, step=1, elem_id="i2v_steps", label="Sampling steps", value=30)
                         i2v_motion = gr.Slider(minimum=5, maximum=20, step=1, elem_id="i2v_motion", label="FPS", value=10)
-                        i2v_start_T = gr.Slider(minimum=0.8, maximum=1.0, step=0.01, elem_id="i2v_start_T", label="Start Temperature", value=0.9)
+                        i2v_ddpm_from = gr.Slider(minimum=840, maximum=1000, step=1, elem_id="i2v_motion", label="ddpm_from", value=900)
+                        
                     i2v_end_btn = gr.Button("Generate")
                 # with gr.Tab(label='Result'):
                 with gr.Row():
@@ -158,7 +159,7 @@ with gr.Blocks(analytics_enabled=False, css=css) as demo:
                         fn = infer,
                         cache_examples=True,
             )
-        i2v_end_btn.click(inputs=[i2v_input_image, i2v_input_text, i2v_steps, i2v_cfg_scale, i2v_eta, i2v_motion, i2v_seed],
+        i2v_end_btn.click(inputs=[i2v_input_image, i2v_input_text, i2v_steps, i2v_cfg_scale, i2v_eta, i2v_motion, i2v_seed, i2v_ddpm_from],
                         outputs=[i2v_output_video],
                         fn = infer
         )
