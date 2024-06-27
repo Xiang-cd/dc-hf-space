@@ -1,4 +1,4 @@
-import spaces
+# import spaces
 import gradio as gr
 import os
 import sys
@@ -22,20 +22,21 @@ from funcs import (
 )
 
 def download_model():
-    REPO_ID = 'Doubiiu/DynamiCrafter_1024'
-    filename_list = ['model.ckpt']
-    if not os.path.exists('./checkpoints/dynamicrafter_1024_v1/'):
-        os.makedirs('./checkpoints/dynamicrafter_1024_v1/')
+    REPO_ID = 'GraceZhao/DynamiCrafter-CIL-512'
+    ckpt_dir = './checkpoints/dynamicrafter_512_cil/'
+    filename_list = ['timenoise.ckpt']
+    if not os.path.exists(ckpt_dir):
+        os.makedirs(ckpt_dir)
     for filename in filename_list:
-        local_file = os.path.join('./checkpoints/dynamicrafter_1024_v1/', filename)
+        local_file = os.path.join(ckpt_dir, filename)
         if not os.path.exists(local_file):
-            hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir='./checkpoints/dynamicrafter_1024_v1/', force_download=True)
+            hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir=ckpt_dir, force_download=True)
 
 
 
 download_model()
-ckpt_path='checkpoints/dynamicrafter_1024_v1/model.ckpt'
-config_file='configs/inference_1024_v1.0.yaml'
+ckpt_path='checkpoints/dynamicrafter_512_cil/timenoise.ckpt'
+config_file='configs/inference_512_v1.0.yaml'
 config = OmegaConf.load(config_file)
 model_config = config.pop("model", OmegaConf.create())
 model_config['params']['unet_config']['params']['use_checkpoint']=False   
@@ -47,9 +48,9 @@ model = model.cuda()
 
 
 
-@spaces.GPU(duration=300)
+# @spaces.GPU(duration=300)
 def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
-    resolution = (576, 1024)
+    resolution = (320, 512)
     save_fps = 8
     seed_everything(seed)
     transform = transforms.Compose([
@@ -114,8 +115,8 @@ i2v_examples = [
 
 css = """#input_img {max-width: 1024px !important} #output_vid {max-width: 1024px; max-height: 576px}"""
 
-with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
-    gr.Markdown("<div align='center'> <h1> DynamiCrafter: Animating Open-domain Images with Video Diffusion Priors </span> </h1> \
+with gr.Blocks(analytics_enabled=False, css=css) as demo:
+    gr.Markdown("<div align='center'> <h1> DynamiCrafter-CIL </span> </h1> \
                     <h2 style='font-weight: 450; font-size: 1rem; margin: 0rem'>\
                     <a href='https://doubiiu.github.io/'>Jinbo Xing</a>, \
                     <a href='https://menghanxia.github.io/'>Menghan Xia</a>, <a href='https://yzhang2016.github.io/'>Yong Zhang</a>, \
@@ -145,6 +146,7 @@ with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
                     with gr.Row():
                         i2v_steps = gr.Slider(minimum=1, maximum=50, step=1, elem_id="i2v_steps", label="Sampling steps", value=30)
                         i2v_motion = gr.Slider(minimum=5, maximum=20, step=1, elem_id="i2v_motion", label="FPS", value=10)
+                        i2v_start_T = gr.Slider(minimum=0.8, maximum=1.0, step=0.01, elem_id="i2v_start_T", label="Start Temperature", value=0.9)
                     i2v_end_btn = gr.Button("Generate")
                 # with gr.Tab(label='Result'):
                 with gr.Row():
@@ -161,4 +163,4 @@ with gr.Blocks(analytics_enabled=False, css=css) as dynamicrafter_iface:
                         fn = infer
         )
 
-dynamicrafter_iface.queue(max_size=12).launch(show_api=True)
+demo.queue(max_size=12).launch(show_api=True)
