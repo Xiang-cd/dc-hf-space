@@ -54,8 +54,7 @@ def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123, ddpm_
     save_fps = 8
     seed_everything(seed)
     transform = transforms.Compose([
-        transforms.Resize(min(resolution)),
-        transforms.CenterCrop(resolution),
+        transforms.Resize(resolution),
         ])
     torch.cuda.empty_cache()
     print('start:', prompt, time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
