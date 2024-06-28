@@ -48,7 +48,7 @@ model = model.cuda()
 
 
 
-# @spaces.GPU(duration=300)
+@spaces.GPU(duration=300)
 def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123, ddpm_from=1000):
     resolution = (320, 512)
     save_fps = 8
